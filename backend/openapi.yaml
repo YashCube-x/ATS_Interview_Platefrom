@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: AI ATS Backend API
+  version: 1.0.0
+  description: REST API for authentication, resume intake, candidate management, matching, interviews, portal access, email, notifications, and analytics.
+servers:
+  - url: http://localhost:5000/api
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ApiSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+        message:
+          type: string
+    ApiError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
+paths:
+  /auth/register:
+    post:
+      security: []
+      summary: Register a user
+      responses:
+        '201': { description: Created }
+  /auth/login:
+    post:
+      security: []
+      summary: Login recruiter, admin, or user
+      responses:
+        '200': { description: Login successful }
+  /auth/refresh-token:
+    post:
+      security: []
+      summary: Refresh access token
+      responses:
+        '200': { description: Token refreshed }
+  /auth/profile:
+    get:
+      summary: Get authenticated user profile
+      responses:
+        '200': { description: Profile fetched }
+  /candidates:
+    get:
+      summary: List candidates
+      responses:
+        '200': { description: Candidate list }
+    post:
+      summary: Create candidate
+      responses:
+        '201': { description: Candidate created }
+  /candidates/{id}:
+    get:
+      summary: Get candidate by id
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Candidate }
+    put:
+      summary: Update candidate
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Candidate updated }
+    delete:
+      summary: Delete candidate
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Candidate deleted }
+  /candidates/{id}/status:
+    patch:
+      summary: Shortlist, reject, select, or otherwise update candidate status
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Candidate status updated }
+  /resumes/upload:
+    post:
+      summary: Upload and process a resume file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '201': { description: Resume processed }
+  /resumes/process:
+    post:
+      summary: Extract resume text and parsed fields without creating candidate
+      responses:
+        '200': { description: Resume extracted }
+  /jobs:
+    get:
+      summary: List jobs
+      responses:
+        '200': { description: Job list }
+    post:
+      summary: Create job
+      responses:
+        '201': { description: Job created }
+  /jobs/{id}:
+    get:
+      summary: Get job by id
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Job }
+    put:
+      summary: Update job
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Job updated }
+    delete:
+      summary: Delete job
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Job deleted }
+  /matching/job/{jobId}:
+    post:
+      summary: Run matching for a job
+      parameters:
+        - { name: jobId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Matching completed }
+  /matching/job/{jobId}/results:
+    get:
+      summary: Get stored matching results
+      parameters:
+        - { name: jobId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Matching results }
+  /interviews:
+    get:
+      summary: List interviews
+      responses:
+        '200': { description: Interview list }
+    post:
+      summary: Schedule interview
+      responses:
+        '201': { description: Interview scheduled }
+  /interviews/{id}:
+    get:
+      summary: Get interview
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Interview }
+  /portal/login:
+    post:
+      security: []
+      summary: Candidate portal login
+      responses:
+        '200': { description: Portal login successful }
+  /portal/profile:
+    get:
+      summary: Candidate portal profile
+      responses:
+        '200': { description: Candidate profile }
+  /portal/status:
+    get:
+      summary: Candidate interview, offer, and onboarding status
+      responses:
+        '200': { description: Candidate status }
+  /emails/send:
+    post:
+      summary: Send an outbound email
+      responses:
+        '200': { description: Email sent }
+  /emails/ingest-resumes:
+    post:
+      summary: Ingest latest resume attachments from Gmail
+      responses:
+        '200': { description: Email resume ingestion completed }
+  /notifications/candidate-status:
+    post:
+      summary: Send a candidate status notification
+      responses:
+        '200': { description: Notification processed }
+  /analytics/dashboard:
+    get:
+      summary: Dashboard metrics
+      responses:
+        '200': { description: Dashboard metrics }
+  /analytics/jobs:
+    get:
+      summary: Job analytics
+      responses:
+        '200': { description: Job analytics }
+  /analytics/candidates:
+    get:
+      summary: Candidate analytics
+      responses:
+        '200': { description: Candidate analytics }

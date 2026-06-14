@@ -1,0 +1,244 @@
+# ATS Platform — React Frontend Implementation Plan
+
+## Backend Summary
+
+Your backend is an **AI-powered Applicant Tracking System** built with:
+- **Express + TypeScript** on port `5000`, all routes under `/api`
+- **MongoDB** (Mongoose) with models: User, Candidate, Job, Interview, MatchingResult, Offer, CandidatePortalCredentials
+- **JWT auth** (Bearer token, refresh token)
+- **AI services**: Gemini (resume parsing, AI summary), Pinecone (semantic search), Ollama (local LLM)
+- **Cloudinary** for resume file storage
+- **Gmail API** for email ingestion + Nodemailer for outbound email
+
+### Key API Endpoints
+
+| Module | Endpoints |
+|---|---|
+| Auth | `POST /register`, `POST /login`, `POST /refresh-token`, `GET /profile` |
+| Candidates | `GET/POST /candidates`, `GET/PUT/DELETE /candidates/:id`, `PATCH /candidates/:id/status` |
+| Resumes | `POST /resumes/upload`, `POST /resumes/process` |
+| Jobs | `GET/POST /jobs`, `GET/PUT/DELETE /jobs/:id` |
+| Matching | `POST /matching/job/:jobId`, `GET /matching/job/:jobId/results` |
+| Interviews | `GET/POST /interviews`, `GET /interviews/:id` |
+| Portal | `POST /portal/login`, `GET /portal/profile`, `GET /portal/status` |
+| Email | `POST /emails/send`, `POST /emails/ingest-resumes` |
+| Notifications | `POST /notifications/candidate-status` |
+| Analytics | `GET /analytics/dashboard`, `GET /analytics/jobs`, `GET /analytics/candidates` |
+
+### Roles: `admin`, `recruiter`, `candidate`
+
+---
+
+## Proposed Frontend Architecture
+
+### Tech Stack
+- **React 18** via Vite (fast dev server, TypeScript template)
+- **React Router v6** for routing
+- **Axios** for API calls
+- **Recharts** for analytics charts
+- **React Hot Toast** for notifications
+- **Lucide React** for icons
+
+### File Structure
+
+```
+Client/
+├── index.html
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── .env                          # VITE_API_URL=http://localhost:5000/api
+├── public/
+│   └── favicon.svg
+└── src/
+    ├── main.tsx                  # React entry point
+    ├── App.tsx                   # Root component + Router
+    ├── index.css                 # Global styles + design system
+    │
+    ├── api/
+    │   ├── client.ts             # Axios instance with interceptors
+    │   ├── auth.api.ts           # Auth endpoints
+    │   ├── candidates.api.ts     # Candidates CRUD
+    │   ├── jobs.api.ts           # Jobs CRUD
+    │   ├── resumes.api.ts        # Resume upload/process
+    │   ├── matching.api.ts       # Matching engine
+    │   ├── interviews.api.ts     # Interviews CRUD
+    │   ├── analytics.api.ts      # Dashboard/analytics
+    │   ├── emails.api.ts         # Email operations
+    │   └── portal.api.ts         # Candidate portal
+    │
+    ├── context/
+    │   └── AuthContext.tsx        # Auth state, login/logout, token mgmt
+    │
+    ├── hooks/
+    │   ├── useAuth.ts            # Auth context consumer
+    │   └── useFetch.ts           # Generic data fetching hook
+    │
+    ├── components/
+    │   ├── layout/
+    │   │   ├── Sidebar.tsx       # Navigation sidebar
+    │   │   ├── Header.tsx        # Top bar with user info
+    │   │   └── DashboardLayout.tsx # Sidebar + Header wrapper
+    │   ├── ui/
+    │   │   ├── Button.tsx
+    │   │   ├── Input.tsx
+    │   │   ├── Modal.tsx
+    │   │   ├── Badge.tsx
+    │   │   ├── Card.tsx
+    │   │   ├── Table.tsx
+    │   │   ├── Loader.tsx
+    │   │   ├── EmptyState.tsx
+    │   │   └── FileUpload.tsx
+    │   └── charts/
+    │       ├── StatusPieChart.tsx
+    │       └── BarChart.tsx
+    │
+    ├── pages/
+    │   ├── auth/
+    │   │   ├── LoginPage.tsx
+    │   │   └── RegisterPage.tsx
+    │   ├── dashboard/
+    │   │   └── DashboardPage.tsx  # KPI cards + charts
+    │   ├── candidates/
+    │   │   ├── CandidatesPage.tsx # List + search/filter
+    │   │   └── CandidateDetailPage.tsx # Full profile + status actions
+    │   ├── jobs/
+    │   │   ├── JobsPage.tsx       # List + create
+    │   │   └── JobDetailPage.tsx  # Detail + run matching
+    │   ├── interviews/
+    │   │   └── InterviewsPage.tsx # Schedule + list
+    │   ├── resumes/
+    │   │   └── ResumeUploadPage.tsx # Drag-and-drop upload
+    │   ├── matching/
+    │   │   └── MatchingResultsPage.tsx # Ranked results for a job
+    │   ├── analytics/
+    │   │   └── AnalyticsPage.tsx  # Charts + breakdowns
+    │   └── portal/
+    │       ├── PortalLoginPage.tsx
+    │       └── PortalDashboard.tsx
+    │
+    ├── routes/
+    │   ├── AppRoutes.tsx          # All route definitions
+    │   └── ProtectedRoute.tsx     # Auth guard component
+    │
+    ├── types/
+    │   └── index.ts               # TypeScript interfaces mirroring backend
+    │
+    └── utils/
+        ├── constants.ts           # Status colors, labels
+        └── formatters.ts          # Date, number formatters
+```
+
+---
+
+## Design System — Minimal Premium Dark Theme
+
+### Color Palette
+| Token | Value | Usage |
+|---|---|---|
+| `--bg-primary` | `#0a0a0f` | Page background |
+| `--bg-secondary` | `#12121a` | Cards, sidebars |
+| `--bg-elevated` | `#1a1a2e` | Hover states, modals |
+| `--accent` | `#6c5ce7` | Primary buttons, active states |
+| `--accent-glow` | `rgba(108, 92, 231, 0.15)` | Subtle glow effects |
+| `--text-primary` | `#f0f0f5` | Headings |
+| `--text-secondary` | `#8888a0` | Body text, labels |
+| `--border` | `rgba(255, 255, 255, 0.06)` | Subtle borders |
+| `--success` | `#00d68f` | Shortlisted, selected |
+| `--danger` | `#ff6b6b` | Rejected, errors |
+| `--warning` | `#ffa726` | On-hold, pending |
+| `--info` | `#4fc3f7` | Info badges |
+
+### Design Principles
+- **Glassmorphism cards** with subtle `backdrop-filter: blur`
+- **Smooth transitions** (200ms ease) on all interactive elements
+- **Gradient accent buttons** with hover glow
+- **Inter** font from Google Fonts
+- **Minimal spacing** — clean, breathable layouts
+- **Micro-animations** on card hover (translate + shadow lift)
+
+---
+
+## Pages Overview
+
+### 1. Login / Register
+- Centered card, gradient accent border
+- Email + password fields, role selector (register only)
+- JWT stored in localStorage, refresh token rotation
+
+### 2. Dashboard
+- 7 KPI metric cards (total candidates, open jobs, shortlisted, etc.)
+- Candidate status pie chart
+- Job status breakdown bar chart
+- Recent candidates table
+
+### 3. Candidates
+- Searchable, filterable table (status, source)
+- Click row → detail page
+- Status badge with color coding
+- Bulk status update capability
+
+### 4. Candidate Detail
+- Profile header with AI summary
+- Skills tags, experience timeline, education
+- Status action buttons (shortlist, reject, select)
+- Interview history, matching scores
+
+### 5. Jobs
+- Job cards grid/list toggle
+- Status filter tabs (Draft, Open, Closed, Filled)
+- Create job modal/form
+- Click → Job detail with "Run Matching" button
+
+### 6. Resume Upload
+- Drag-and-drop file zone with progress indicator
+- Supports PDF, DOCX, TXT
+- Shows parsed result preview after upload
+
+### 7. Matching Results
+- Ranked candidate cards per job
+- Score breakdown (semantic, skills, experience, project, education)
+- Horizontal bar visualization for each score component
+- Quick-action to shortlist/reject from results
+
+### 8. Interviews
+- Calendar-style list of scheduled interviews
+- Schedule new interview form (candidate, job, round, date)
+- Status badges (scheduled, completed, cancelled)
+
+### 9. Analytics
+- Candidate breakdown by status (pie)
+- Candidate sources (bar)
+- Top skills (horizontal bar)
+- Job analytics — top matched jobs by avg score
+
+### 10. Candidate Portal (separate route group)
+- Simple login for candidates
+- View application status, interview schedule, offer status
+
+---
+
+## Open Questions
+
+> [!IMPORTANT]
+> **Routing preference**: Should the candidate portal be a completely separate app/route (`/portal/*`) or integrated within the same app with role-based rendering?
+
+> [!IMPORTANT]
+> **Authentication**: The backend has separate login endpoints for admins/recruiters (`/auth/login`) and candidates (`/portal/login`). Should I keep them as separate login pages or unify them with a role toggle?
+
+> [!NOTE]
+> **Existing Client folder**: The `Client/` directory is currently empty. I'll scaffold the Vite React project directly inside it.
+
+---
+
+## Verification Plan
+
+### Automated
+- `npm run build` — Ensure zero TypeScript errors
+- `npm run dev` — Verify dev server starts on port 3000
+
+### Manual
+- Login flow → dashboard → navigate all pages
+- Resume upload → see parsed result
+- Create job → run matching → view results
+- CORS check: frontend on :3000 hitting backend on :5000
