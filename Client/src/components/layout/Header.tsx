@@ -43,10 +43,10 @@ export default function Header({
           </button>
         )}
 
-        <h1 style={{ margin: 0 }}>{title}</h1>
+        <h1 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: '#111111' }}>{title}</h1>
       </div>
       <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <button className="btn btn-icon btn-ghost" id="notifications-btn" aria-label="Notifications">
+        <button className="btn btn-icon btn-ghost" id="notifications-btn" aria-label="Notifications" style={{ padding: '6px' }}>
           <Bell size={18} />
         </button>
         <div className="user-avatar" title={user?.name || 'User'}>

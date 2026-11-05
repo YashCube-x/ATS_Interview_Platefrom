@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Globe, FileText, ExternalLink, ChevronDown, Check, X, Eye, Search } from 'lucide-react';
+import { Globe, FileText, ExternalLink, Check, X, Eye, Search } from 'lucide-react';
 import { webApplicationsApi, type WebApplication, type WebAppStatus } from '../../api/webApplications.api';
 import { useFetch } from '../../hooks/useFetch';
 import { formatRelativeTime, formatDate } from '../../utils/formatters';
@@ -20,15 +20,16 @@ export default function WebApplicationsPage() {
   const [selected, setSelected] = useState<WebApplication | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useFetch(
+  const { data, isLoading, refetch } = useFetch<{ applications: WebApplication[]; total: number }>(
     () =>
-      webApplicationsApi
-        .list({ status: statusFilter === 'all' ? undefined : statusFilter, limit: 100 })
-        .then((r) => r.data.data),
+      webApplicationsApi.list({
+        status: statusFilter === 'all' ? undefined : statusFilter,
+        limit: 100,
+      }),
     [statusFilter]
   );
 
-  const applications = (data?.applications ?? []).filter((a) => {
+  const applications = (data?.applications ?? []).filter((a: WebApplication) => {
     if (!search) return true;
     const q = search.toLowerCase();
     return (

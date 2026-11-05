@@ -22,15 +22,13 @@ export const initPinecone = async (): Promise<Pinecone> => {
   }
 };
 
-export const getPineconeInstance = (): Pinecone => {
-  if (!pineconeInstance) {
-    throw new Error('Pinecone not initialized. Call initPinecone first.');
-  }
+export const getPineconeInstance = (): Pinecone | null => {
   return pineconeInstance;
 };
 
 export const getPineconeIndex = async () => {
   const pinecone = getPineconeInstance();
+  if (!pinecone) return null;
   return pinecone.index(envConfig.PINECONE_INDEX_NAME);
 };
 

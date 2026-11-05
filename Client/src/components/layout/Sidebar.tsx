@@ -64,12 +64,10 @@ export default function Sidebar({
           </div>
           {!isCollapsed && (
             <div className="sidebar-brand-text-wrapper" style={{ marginLeft: '6px' }}>
-              <h2 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, background: 'none', WebkitTextFillColor: 'initial', letterSpacing: '0.05em' }}>
-                ASHTA TECH
+              <h2 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>
+                <span style={{ color: '#111111' }}>Ashta</span>{' '}
+                <span style={{ color: '#4968C8' }}>Tech</span>
               </h2>
-              <div style={{ fontSize: '0.5625rem', color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.08em', marginTop: '-2px' }}>
-                AUTOMATION
-              </div>
             </div>
           )}
         </div>
@@ -149,7 +147,13 @@ export default function Sidebar({
             </div>
           )}
         </div>
-        <button className="btn btn-ghost btn-sm w-full" onClick={logout} id="logout-btn" title="Sign Out">
+        <button
+          className="btn btn-ghost btn-sm w-full"
+          onClick={logout}
+          id="logout-btn"
+          title="Sign Out"
+          data-liquid="danger"
+        >
           <LogOut size={16} />
           <span>Sign Out</span>
         </button>

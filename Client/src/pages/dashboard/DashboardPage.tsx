@@ -28,13 +28,13 @@ import { formatRelativeTime } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 
 const metricCards = [
-  { key: 'totalCandidates',     label: 'Total Candidates',      icon: Users,        color: '#6c5ce7', link: '/candidates' },
-  { key: 'totalJobs',           label: 'Total Jobs',            icon: Briefcase,    color: '#4fc3f7', link: '/jobs' },
-  { key: 'openJobs',            label: 'Open Positions',        icon: TrendingUp,   color: '#00d68f', link: '/jobs?status=open' },
-  { key: 'shortlistedCandidates', label: 'Shortlisted',         icon: UserCheck,    color: '#ffa726', link: '/candidates?status=shortlisted' },
-  { key: 'selectedCandidates',  label: 'Selected',              icon: CheckCircle,  color: '#a29bfe', link: '/candidates?status=selected' },
-  { key: 'rejectedCandidates',  label: 'Rejected',              icon: UserX,        color: '#ff6b6b', link: '/candidates?status=rejected' },
-  { key: 'upcomingInterviews',  label: 'Upcoming Interviews',   icon: Calendar,     color: '#74b9ff', link: '/interviews' },
+  { key: 'totalCandidates',       label: 'Total Candidates',    icon: Users,        link: '/candidates' },
+  { key: 'totalJobs',             label: 'Total Jobs',          icon: Briefcase,    link: '/jobs' },
+  { key: 'openJobs',              label: 'Open Positions',      icon: TrendingUp,   link: '/jobs?status=open' },
+  { key: 'shortlistedCandidates', label: 'Shortlisted',         icon: UserCheck,    link: '/candidates?status=shortlisted' },
+  { key: 'selectedCandidates',    label: 'Selected',            icon: CheckCircle,  link: '/candidates?status=selected' },
+  { key: 'rejectedCandidates',    label: 'Rejected',            icon: UserX,        link: '/candidates?status=rejected' },
+  { key: 'upcomingInterviews',    label: 'Upcoming Interviews', icon: Calendar,     link: '/interviews' },
 ];
 
 export default function DashboardPage() {
@@ -52,7 +52,7 @@ export default function DashboardPage() {
 
   return (
     <div className="animate-fade-in">
-      {/* Metric Cards */}
+      {/* Metric Cards - 4px corners, 36px icon tile, tabular-nums */}
       <div className="grid-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
         {metricCards.map((card) => (
           <div
@@ -62,14 +62,11 @@ export default function DashboardPage() {
             style={{ cursor: 'pointer' }}
             title={`View ${card.label}`}
           >
-            <div
-              className="metric-icon"
-              style={{ background: `${card.color}18`, color: card.color }}
-            >
-              <card.icon size={22} />
+            <div className="metric-icon">
+              <card.icon size={20} />
             </div>
             <div>
-              <div className="metric-value">
+              <div className="metric-value tnum">
                 {metricsLoading ? '—' : (metrics as unknown as Record<string, number>)?.[card.key] ?? 0}
               </div>
               <div className="metric-label">{card.label}</div>
@@ -91,18 +88,18 @@ export default function DashboardPage() {
                   { name: 'Selected', count: metrics.selectedCandidates },
                   { name: 'Rejected', count: metrics.rejectedCandidates },
                 ]}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                  <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 11 }} />
-                  <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#DDE4F7" />
+                  <XAxis dataKey="name" tick={{ fill: '#6B7388', fontSize: 11 }} />
+                  <YAxis tick={{ fill: '#6B7388', fontSize: 11 }} />
                   <Tooltip
                     contentStyle={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-md)',
-                      color: 'var(--text-primary)',
+                      background: '#FFFFFF',
+                      border: '1px solid #DDE4F7',
+                      borderRadius: '4px',
+                      color: '#111111',
                     }}
                   />
-                  <Bar dataKey="count" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill="#1A3181" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -126,15 +123,15 @@ export default function DashboardPage() {
                     dataKey="value"
                     label={({ name, value }) => `${name}: ${value}`}
                   >
-                    <Cell fill="var(--accent)" />
-                    <Cell fill="var(--border-hover)" />
+                    <Cell fill="#1A3181" />
+                    <Cell fill="#B9C6EA" />
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-md)',
-                      color: 'var(--text-primary)',
+                      background: '#FFFFFF',
+                      border: '1px solid #DDE4F7',
+                      borderRadius: '4px',
+                      color: '#111111',
                     }}
                   />
                 </PieChart>

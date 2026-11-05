@@ -7,9 +7,13 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor: attach JWT token if present
+// Request interceptor: attach scoped JWT token based on endpoint
 client.interceptors.request.use((config: any) => {
-  const token = localStorage.getItem('accessToken') || localStorage.getItem('portalToken');
+  const isPortalRoute = config.url && config.url.includes('/portal');
+  const token = isPortalRoute
+    ? localStorage.getItem('portalToken') || localStorage.getItem('accessToken')
+    : localStorage.getItem('accessToken') || localStorage.getItem('portalToken');
+
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }

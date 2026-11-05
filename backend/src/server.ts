@@ -22,32 +22,58 @@ const startServer = async () => {
     logger.info('✓ MongoDB connected');
 
     // Initialize Cloudinary
-    initCloudinary();
-    logger.info('✓ Cloudinary initialized');
+    try {
+      if (envConfig.CLOUDINARY_CLOUD_NAME && envConfig.CLOUDINARY_API_KEY) {
+        initCloudinary();
+        logger.info('✓ Cloudinary initialized');
+      } else {
+        logger.warn('⚠ Cloudinary credentials missing, using local/dummy storage mode');
+      }
+    } catch (err) {
+      logger.warn('⚠ Cloudinary initialization failed, continuing...', err);
+    }
 
     // Initialize Pinecone
-    await initPinecone();
-    logger.info('✓ Pinecone initialized');
-
-    // Create Pinecone index if needed
     try {
-      await createPineconeIndex(envConfig.PINECONE_INDEX_NAME);
-      logger.info('✓ Pinecone index created/verified');
-    } catch (error) {
-      logger.warn('Pinecone index creation skipped', error);
+      if (envConfig.PINECONE_API_KEY) {
+        await initPinecone();
+        logger.info('✓ Pinecone initialized');
+        try {
+          await createPineconeIndex(envConfig.PINECONE_INDEX_NAME);
+          logger.info('✓ Pinecone index created/verified');
+        } catch (error) {
+          logger.warn('Pinecone index creation skipped', error);
+        }
+      } else {
+        logger.warn('⚠ Pinecone API key missing, semantic vector search running in fallback mode');
+      }
+    } catch (err) {
+      logger.warn('⚠ Pinecone initialization failed, continuing...', err);
     }
 
     // Initialize Gemini
-    initGemini();
-    logger.info('✓ Gemini API initialized');
+    try {
+      if (envConfig.GEMINI_API_KEY) {
+        initGemini();
+        logger.info('✓ Gemini API initialized');
+      } else {
+        logger.warn('⚠ Gemini API key missing, local Ollama / regex fallback will handle parsing');
+      }
+    } catch (err) {
+      logger.warn('⚠ Gemini initialization failed, continuing...', err);
+    }
 
     // Verify email service
-    const emailService = new EmailService();
-    const emailVerified = await emailService.verifyConnection();
-    if (emailVerified) {
-      logger.info('✓ Email service verified');
-    } else {
-      logger.warn('⚠ Email service verification failed, but continuing...');
+    try {
+      const emailService = new EmailService();
+      const emailVerified = await emailService.verifyConnection();
+      if (emailVerified) {
+        logger.info('✓ Email service verified');
+      } else {
+        logger.warn('⚠ Email service verification failed, but continuing...');
+      }
+    } catch (err) {
+      logger.warn('⚠ Email service check skipped, continuing...');
     }
 
     // Create Express app

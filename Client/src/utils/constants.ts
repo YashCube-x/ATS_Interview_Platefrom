@@ -4,32 +4,32 @@ import type { CandidateStatus, JobStatus, InterviewStatus, InterviewRound } from
    Status color mappings & label helpers
    ──────────────────────────────────────────── */
 
-export const CANDIDATE_STATUS_CONFIG: Record<CandidateStatus, { label: string; color: string }> = {
-  applied:        { label: 'Applied',        color: 'var(--info)' },
-  reviewed:       { label: 'Reviewed',       color: 'var(--text-secondary)' },
-  shortlisted:    { label: 'Shortlisted',    color: 'var(--warning)' },
-  rejected:       { label: 'Rejected',       color: 'var(--danger)' },
-  selected:       { label: 'Selected',       color: 'var(--accent)' },
-  offer_extended: { label: 'Offer Extended', color: 'var(--accent-light)' },
-  offer_accepted: { label: 'Offer Accepted', color: 'var(--success)' },
-  offer_declined: { label: 'Offer Declined', color: 'var(--danger)' },
-  onboarding:     { label: 'Onboarding',     color: 'var(--info)' },
-  joined:         { label: 'Joined',         color: 'var(--success)' },
+export const CANDIDATE_STATUS_CONFIG: Record<CandidateStatus, { label: string; color: string; bg?: string }> = {
+  applied:        { label: 'Applied',        color: '#3E63DD', bg: '#E7ECFB' },
+  reviewed:       { label: 'Reviewed',       color: '#6B7388', bg: '#F3F5FB' },
+  shortlisted:    { label: 'Shortlisted',    color: '#B7791F', bg: '#FDF3D9' },
+  rejected:       { label: 'Rejected',       color: '#D0364A', bg: '#FCE8EA' },
+  selected:       { label: 'Selected',       color: '#1A3181', bg: '#E4ECFC' },
+  offer_extended: { label: 'Offer Extended', color: '#4968C8', bg: '#E7ECFB' },
+  offer_accepted: { label: 'Offer Accepted', color: '#17915A', bg: '#EBF8F2' },
+  offer_declined: { label: 'Offer Declined', color: '#D0364A', bg: '#FCE8EA' },
+  onboarding:     { label: 'Onboarding',     color: '#3E63DD', bg: '#E7ECFB' },
+  joined:         { label: 'Joined',         color: '#17915A', bg: '#EBF8F2' },
 };
 
-export const JOB_STATUS_CONFIG: Record<JobStatus, { label: string; color: string }> = {
-  draft:   { label: 'Draft',   color: 'var(--text-secondary)' },
-  open:    { label: 'Open',    color: 'var(--success)' },
-  closed:  { label: 'Closed',  color: 'var(--danger)' },
-  filled:  { label: 'Filled',  color: 'var(--accent)' },
-  on_hold: { label: 'On Hold', color: 'var(--warning)' },
+export const JOB_STATUS_CONFIG: Record<JobStatus, { label: string; color: string; bg?: string }> = {
+  draft:   { label: 'Draft',   color: '#6B7388', bg: '#F3F5FB' },
+  open:    { label: 'Open',    color: '#17915A', bg: '#EBF8F2' },
+  closed:  { label: 'Closed',  color: '#D0364A', bg: '#FCE8EA' },
+  filled:  { label: 'Filled',  color: '#1A3181', bg: '#E4ECFC' },
+  on_hold: { label: 'On Hold', color: '#B7791F', bg: '#FDF3D9' },
 };
 
-export const INTERVIEW_STATUS_CONFIG: Record<InterviewStatus, { label: string; color: string }> = {
-  scheduled:   { label: 'Scheduled',   color: 'var(--info)' },
-  completed:   { label: 'Completed',   color: 'var(--success)' },
-  cancelled:   { label: 'Cancelled',   color: 'var(--danger)' },
-  rescheduled: { label: 'Rescheduled', color: 'var(--warning)' },
+export const INTERVIEW_STATUS_CONFIG: Record<InterviewStatus, { label: string; color: string; bg?: string }> = {
+  scheduled:   { label: 'Scheduled',   color: '#3E63DD', bg: '#E7ECFB' },
+  completed:   { label: 'Completed',   color: '#17915A', bg: '#EBF8F2' },
+  cancelled:   { label: 'Cancelled',   color: '#D0364A', bg: '#FCE8EA' },
+  rescheduled: { label: 'Rescheduled', color: '#B7791F', bg: '#FDF3D9' },
 };
 
 export const INTERVIEW_ROUND_LABELS: Record<InterviewRound, string> = {

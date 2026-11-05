@@ -84,19 +84,6 @@ const requiredEnvVars = [
   'MONGODB_URI',
   'JWT_SECRET',
   'JWT_REFRESH_SECRET',
-  'GEMINI_API_KEY',
-  'GEMINI_MODEL_NAME',
-  'PINECONE_API_KEY',
-  'PINECONE_INDEX_NAME',
-  'PINECONE_ENVIRONMENT',
-  'CLOUDINARY_CLOUD_NAME',
-  'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET',
-  'SMTP_HOST',
-  'SMTP_USER',
-  'SMTP_PASS',
-  'FRONTEND_URL',
-  'CORS_ORIGIN',
 ];
 
 const validateEnv = (): void => {
@@ -107,6 +94,19 @@ const validateEnv = (): void => {
       `Missing required environment variables:\n${missingVars.map((v) => `  - ${v}`).join('\n')}\n\nPlease check your .env file or set these variables.`
     );
   }
+
+  const optionalVars = [
+    'GEMINI_API_KEY',
+    'PINECONE_API_KEY',
+    'CLOUDINARY_CLOUD_NAME',
+    'SMTP_HOST',
+  ];
+  const missingOptional = optionalVars.filter((v) => !process.env[v]);
+  if (missingOptional.length > 0) {
+    console.warn(
+      `[EnvWarning] Optional external service variables not set: ${missingOptional.join(', ')}. Graceful fallbacks will be used.`
+    );
+  }
 };
 
 const getEnvConfig = (): EnvConfig => {
@@ -115,33 +115,33 @@ const getEnvConfig = (): EnvConfig => {
   return {
     PORT: parseInt(process.env.PORT || '5000', 10),
     NODE_ENV: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
-    MONGODB_URI: process.env.MONGODB_URI!,
-    JWT_SECRET: process.env.JWT_SECRET!,
-    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
+    MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/ats-dev',
+    JWT_SECRET: process.env.JWT_SECRET || 'dev_jwt_secret_key_change_in_production_min_64_characters_long_12345678',
+    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'dev_jwt_refresh_secret_change_in_production_min_64_characters_long_1234',
     JWT_EXPIRY: process.env.JWT_EXPIRY || '7d',
     JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRY || '30d',
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY!,
-    GEMINI_MODEL_NAME: process.env.GEMINI_MODEL_NAME!,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+    GEMINI_MODEL_NAME: process.env.GEMINI_MODEL_NAME || 'gemini-1.5-flash',
     OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
     OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'qwen2.5:3b',
     OLLAMA_EMBEDDING_MODEL: process.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text',
-    PINECONE_API_KEY: process.env.PINECONE_API_KEY!,
-    PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME!,
-    PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT!,
-    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
-    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
-    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+    PINECONE_API_KEY: process.env.PINECONE_API_KEY || '',
+    PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME || 'ats-index',
+    PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT || 'us-east-1-aws',
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || '',
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || '',
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
     GMAIL_CLIENT_ID: process.env.GMAIL_CLIENT_ID || '',
     GMAIL_CLIENT_SECRET: process.env.GMAIL_CLIENT_SECRET || '',
     GMAIL_REFRESH_TOKEN: process.env.GMAIL_REFRESH_TOKEN || '',
     GMAIL_REDIRECT_URI: process.env.GMAIL_REDIRECT_URI || '',
     GMAIL_USER_EMAIL: process.env.GMAIL_USER_EMAIL || '',
-    SMTP_HOST: process.env.SMTP_HOST!,
+    SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
     SMTP_PORT: parseInt(process.env.SMTP_PORT || '587', 10),
-    SMTP_USER: process.env.SMTP_USER!,
-    SMTP_PASS: process.env.SMTP_PASS!,
-    FRONTEND_URL: process.env.FRONTEND_URL!,
-    CORS_ORIGIN: process.env.CORS_ORIGIN!,
+    SMTP_USER: process.env.SMTP_USER || '',
+    SMTP_PASS: process.env.SMTP_PASS || '',
+    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
+    CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
     LOG_LEVEL: process.env.LOG_LEVEL || 'info',
     EMAIL_FROM: process.env.EMAIL_FROM || 'noreply@ats.com',
     EMAIL_SUPPORT: process.env.EMAIL_SUPPORT || 'support@ats.com',

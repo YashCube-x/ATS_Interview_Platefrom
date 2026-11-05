@@ -32,7 +32,7 @@ export class CandidatePortalService {
     await EmailService.sendPortalCredentialsEmail(
       candidate.name,
       candidate.email,
-      `${envConfig.FRONTEND_URL}/candidate-portal`,
+      `${envConfig.FRONTEND_URL}/portal`,
       tempPassword
     );
 
